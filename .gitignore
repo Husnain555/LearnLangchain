@@ -1,0 +1,42 @@
+# Byte-compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Virtual environment
+venv/
+env/
+*.env
+
+# Logs
+*.log
+logs/
+
+# IDE and Editor settings
+.vscode/
+.idea/
+*.iml
+
+# Dependency files
+Pipfile
+Pipfile.lock
+requirements.txt
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Compiled Cython files
+*.so
+
+# Test coverage reports
+.coverage
+htmlcov/
+.coverage.*
+*.cover
+
+# Distribution files
+dist/
+build/
+*.egg-info/
