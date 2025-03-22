@@ -1,32 +1,27 @@
 from fastapi import FastAPI
 from langchain.prompts import ChatPromptTemplate
-from langchain.chat_models import ChatOpenAI
+from langchain.chains import LLMChain
 from langserve import add_routes
 import uvicorn
-import os
 from langchain_community.llms import Ollama
 
-
 app = FastAPI(
-     title="LangChain Community API",
-     description="LangChain Community API",
-     version="1.0",
- )
-
-add_routes(
-    app,
-    Ollama,
-    path='openai'
+    title="LangChain Community API",
+    description="LangChain Community API",
+    version="1.0",
 )
-llms = Ollama(model = "llama2")
 
+# Define the model
+llm = Ollama(model="llama2")
 
-prompt = ChatPromptTemplate.from_template("Write me a assay of 200 lines on this {topic}")
-add_routes(
-    app,
-    prompt|llms,
-    path="essay"
-)
+# Define the prompt template
+prompt = ChatPromptTemplate.from_template("Write an essay of 200 lines about {topic}")
+
+# Create a chain
+essay_chain = LLMChain(prompt=prompt, llm=llm)
+
+# Add the route
+add_routes(app, essay_chain, path="/essay")
 
 if __name__ == "__main__":
-    uvicorn.run(app,host="localhost",port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
