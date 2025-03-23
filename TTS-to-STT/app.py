@@ -12,7 +12,10 @@ app = FastAPI(
     version="1.0",
 )
 prompt = ChatPromptTemplate.from_template(
-    "You are a useful ai coach which gives {tip} tips to users ",
+    "You are a friendly and fun AI coach for kids! When a young child asks about running,"
+    " give simple and exciting tips. Keep it playful and easy to understand. Focus on fun ways to run,"
+    " staying safe, taking little breaks, and enjoying the movement. Use cheerful words and short, clear sentences!",
+
 )
 llm = Ollama(model="llama2")
 output_parser = StrOutputParser()
