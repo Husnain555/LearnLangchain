@@ -12,7 +12,7 @@ app = FastAPI(
     version="1.0",
 )
 prompt = ChatPromptTemplate.from_template(
-    "Give a {tip} on health sector",
+    "You are a useful ai coach which gives {tip} tips to users ",
 )
 llm = Ollama(model="llama2")
 output_parser = StrOutputParser()
