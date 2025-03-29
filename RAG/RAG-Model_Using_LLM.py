@@ -1,7 +1,7 @@
 from langchain_community.document_loaders import TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_ollama import OllamaEmbeddings
-from langchain.vectorstores import Chroma
+from langchain_community.vectorstores import Chroma
 from langchain_community.llms import Ollama
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains.combine_documents import create_stuff_documents_chain
@@ -36,8 +36,11 @@ retrieval_chain = create_retrieval_chain(retriever, document_chain)
 
 # Query the chain
 def data_question(question):
-    return retrieval_chain.invoke({"input":{question}})
-st.title("RAG Question Answering base on Text file")
+    return retrieval_chain.invoke({"input": question})
+
+# Streamlit UI
+st.title("RAG Question Answering based on Text file")
 question = st.text_input("Please enter your question:")
+
 if question:
     st.write(data_question(question))
