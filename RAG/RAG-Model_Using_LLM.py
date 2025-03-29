@@ -43,4 +43,5 @@ st.title("RAG Question Answering based on Text file")
 question = st.text_input("Please enter your question:")
 
 if question:
-    st.write(data_question(question))
+    response = data_question(question)
+    st.write(response["answer"])
