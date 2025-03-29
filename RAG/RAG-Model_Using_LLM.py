@@ -11,7 +11,6 @@ import streamlit as st
 # Load documents
 loader = TextLoader("speech.txt")
 docs = loader.load()
-print(docs)  # Optional: just to see the loaded docs
 
 # Split into chunks
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
