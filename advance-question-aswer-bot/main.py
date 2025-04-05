@@ -25,7 +25,7 @@ wiki = WikipediaQueryRun(api_wrapper=wiki_api)
 arxiv_api = ArxivAPIWrapper(top_k_results=1, doc_content_chars_max=200)
 arxiv = ArxivQueryRun(api_wrapper=arxiv_api)
 
-# LangSmith Web Loader Setup
+# LangSmith Web Loader Setup for Geo News
 web_loader = WebBaseLoader("https://www.geo.tv/")
 docs = web_loader.load()
 
@@ -57,7 +57,7 @@ prompt = ChatPromptTemplate.from_messages([
      "You are an intelligent research assistant with access to the following tools:\n\n"
      "1. **Wikipedia Search** – for general knowledge and widely known topics.\n"
      "2. **Arxiv Search** – for scientific papers, technical research, and academic content.\n"
-     "3. **LangSmith Documentation Search** – for answering anything related to LangChain, LangSmith, or their usage, APIs, or debugging help.\n\n"
+     "3. **Geo News Search** – for the latest news, trending topics, and other relevant content from the Geo TV website. Ideal for news updates and specific articles related to Pakistan.\n\n"
      "Use these tools as needed to provide clear, detailed, and accurate answers. "
      "Always prioritize using the most relevant source based on the user's question. "
      "Cite retrieved information clearly if applicable, and keep your responses concise and helpful."
@@ -76,8 +76,10 @@ agent = create_openai_tools_agent(
     llm=llm,
     prompt=prompt
 )
+
 # Now the agent is ready to be invoked
-agents_x_executor = AgentExecutor(tools = tools, agent = agent,verbose = True)
+agents_x_executor = AgentExecutor(tools=tools, agent=agent, verbose=True)
+
 # Initialize chat_history as an empty list or a suitable structure
 chat_history = []
 
@@ -86,4 +88,3 @@ agents_x_executor_invoke = agents_x_executor.invoke({
     "input": "Give me today latest Pakistani news",
     "chat_history": chat_history  # Include chat_history here
 })
-
