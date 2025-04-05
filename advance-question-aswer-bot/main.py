@@ -1,3 +1,4 @@
+from accelerate.commands.config.default import description
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_community.chat_models import ChatOpenAI
 from langchain_community.tools import WikipediaQueryRun, ArxivQueryRun
@@ -10,6 +11,7 @@ from langchain.tools.retriever import create_retriever_tool
 from langchain.agents import create_openai_tools_agent
 from langchain.agents import AgentExecutor
 from dotenv import load_dotenv
+import streamlit as st
 import os
 
 # Load environment variables
@@ -84,7 +86,22 @@ agents_x_executor = AgentExecutor(tools=tools, agent=agent, verbose=True)
 chat_history = []
 
 # When invoking the agent, include chat_history
-agents_x_executor_invoke = agents_x_executor.invoke({
-    "input": "Give me today latest Pakistani news",
-    "chat_history": chat_history  # Include chat_history here
-})
+st.title("Advanced Rag Chat Bot")
+st.config(description="Advanced Rag Chat Bot to retrieve search results from Pakistani news channels like Geo News, "
+                      "from their articles, as well as from Wikipedia and Arxiv for document-based search.")
+
+ # function to handle user input
+def get_search_results():
+    # Create a text input field for the user to enter a query
+    text_input = st.text_input("Please enter your search query:")
+
+    if text_input:
+        agents_x_executor_invoke = agents_x_executor.invoke({
+            "input": text_input,
+            "chat_history": chat_history
+        })
+
+        st.write(agents_x_executor_invoke)
+
+
+get_search_results()
