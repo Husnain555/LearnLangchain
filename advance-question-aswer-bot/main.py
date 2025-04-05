@@ -87,8 +87,15 @@ chat_history = []
 
 # When invoking the agent, include chat_history
 st.title("Advanced Rag Chat Bot")
-st.config(description="Advanced Rag Chat Bot to retrieve search results from Pakistani news channels like Geo News, "
-                      "from their articles, as well as from Wikipedia and Arxiv for document-based search.")
+st.markdown("""
+**Advanced Rag Chat Bot** to retrieve search results from:
+- Pakistani news channels like **Geo News**
+- **Wikipedia**
+- **Arxiv**
+
+Supports document-based retrieval for accurate and context-aware answers.
+""")
+
 
  # function to handle user input
 def get_search_results():
