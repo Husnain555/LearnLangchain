@@ -78,4 +78,12 @@ agent = create_openai_tools_agent(
 )
 # Now the agent is ready to be invoked
 agents_x_executor = AgentExecutor(tools = tools, agent = agent,verbose = True)
-agents_x_executor.invoke({"input":"Give me today lates pakistani news"})
+# Initialize chat_history as an empty list or a suitable structure
+chat_history = []
+
+# When invoking the agent, include chat_history
+agents_x_executor_invoke = agents_x_executor.invoke({
+    "input": "Give me today latest Pakistani news",
+    "chat_history": chat_history  # Include chat_history here
+})
+
