@@ -99,7 +99,6 @@ Supports document-based retrieval for accurate and context-aware answers.
 
  # function to handle user input
 def get_search_results():
-    # Create a text input field for the user to enter a query
     text_input = st.text_input("Please enter your search query:")
 
     if text_input:
