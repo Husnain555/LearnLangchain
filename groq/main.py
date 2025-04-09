@@ -7,7 +7,7 @@ from langchain_community.embeddings import OllamaEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
-from langchain.chains import create_retrieval_chain  # FIXED typo: was `create_retrival_chain`
+from langchain.chains import create_retrieval_chain
 from langchain_community.vectorstores import FAISS
 import time
 
@@ -20,17 +20,13 @@ if 'vector' not in st.session_state:
         "https://coredirection.com/guides/home?_gl=1*1litgrk*_ga*MTQ4NDgzNDc2OC4xNzQ0MjIyOTE4*_ga_LVSSFZ40HP*MTc0NDIyMjk0Ni4xLjEuMTc0NDIyMjk1NC4wLjAuMA..")
     st.session_state.docs = st.session_state.loader.load()
     st.session_state.chunks_documents = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-
-    # FIXED: method call corrected to use split_documents() from TextSplitter instance
     st.session_state.final_document = st.session_state.chunks_documents.split_documents(st.session_state.docs)
-
     st.session_state.vectors = FAISS.from_documents(st.session_state.final_document, st.session_state.embeddings)
 
 st.title("Chat Groq Demo")
 
 llm = ChatGroq(groq_api_key=groq_api_key, model="Gemma-7b-It")
 
-# FIXED prompt: corrected typos and made instructions clearer and more accurate
 prompt = ChatPromptTemplate.from_template('''
 Use the provided context to answer the question as accurately as possible.
 <context>{context}</context>
@@ -44,7 +40,11 @@ retrieval_chain = create_retrieval_chain(retriever, document_chain)
 propmt = st.text_input("Please input your prompt here")
 
 if propmt:
-    start_time = time.process_time()  # FIXED: renamed 'time' var to 'start_time' to avoid conflict with imported module
-    response = retrieval_chain.invoke({"input": propmt})  # FIXED: typo 'invock' -> 'invoke'
+    start_time = time.process_time()
+    response = retrieval_chain.invoke({"input": propmt})
     print("Response_time:", time.process_time() - start_time)
     st.write(response)
+
+    with st.expander("Similarity- Search Results"):
+        for i, doc in enumerate(response["context"]):
+            st.write(doc.page_content)
