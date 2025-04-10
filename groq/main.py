@@ -22,7 +22,7 @@ if 'vectors' not in st.session_state:
         with st.spinner("Loading and processing documents..."):
             loader = WebBaseLoader(site_url)
             docs = loader.load()
-            text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+            text_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=300)
             final_docs = text_splitter.split_documents(docs)
             st.session_state.vectors = FAISS.from_documents(final_docs, st.session_state.embeddings)
     else:
@@ -33,10 +33,20 @@ st.title("Chat Groq Demo")
 llm = ChatGroq(groq_api_key=groq_api_key, model="gemma2-9b-it")
 
 prompt = ChatPromptTemplate.from_template('''
-Use the provided context to answer the question as accurately as possible.
-<context>{context}</context>
+You are a helpful and precise assistant. Use ONLY the provided context to answer the question below.
+- Extract ALL relevant information from the context.
+- Do NOT make up any facts or guesses.
+- Present the answer in a clear and structured way (e.g., lists, bullet points).
+- If the context does not contain the answer, clearly state: "The context does not provide enough information."
+
+<context>
+{context}
+</context>
+
 Question: {input}
+Answer:
 ''')
+
 
 document_chain = create_stuff_documents_chain(llm, prompt)
 
