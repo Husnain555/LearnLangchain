@@ -22,7 +22,7 @@ if 'vectors' not in st.session_state:
         with st.spinner("Loading and processing documents..."):
             loader = WebBaseLoader(site_url)
             docs = loader.load()
-            text_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=300)
+            text_splitter = RecursiveCharacterTextSplitter(chunk_size=5000, chunk_overlap=700)
             final_docs = text_splitter.split_documents(docs)
             st.session_state.vectors = FAISS.from_documents(final_docs, st.session_state.embeddings)
     else:
