@@ -14,14 +14,19 @@ import time
 load_dotenv()
 groq_api_key = os.environ["LANGCHAIN_GROQ_API_KEY"]
 
-if 'vector' not in st.session_state:
+if 'vectors' not in st.session_state:
     st.session_state.embeddings = OllamaEmbeddings()
-    st.session_state.loader = WebBaseLoader(
-        "https://coredirection.com/guides/user-guide#challenges-leaderboards")
-    st.session_state.docs = st.session_state.loader.load()
-    st.session_state.chunks_documents = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-    st.session_state.final_document = st.session_state.chunks_documents.split_documents(st.session_state.docs)
-    st.session_state.vectors = FAISS.from_documents(st.session_state.final_document, st.session_state.embeddings)
+    site_url = st.text_input("Please enter the site URL you want to interact with")
+
+    if site_url:
+        with st.spinner("Loading and processing documents..."):
+            loader = WebBaseLoader(site_url)
+            docs = loader.load()
+            text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+            final_docs = text_splitter.split_documents(docs)
+            st.session_state.vectors = FAISS.from_documents(final_docs, st.session_state.embeddings)
+    else:
+        st.info("Please enter a site URL above.")
 
 st.title("Chat Groq Demo")
 
@@ -34,17 +39,21 @@ Question: {input}
 ''')
 
 document_chain = create_stuff_documents_chain(llm, prompt)
-retriever = st.session_state.vectors.as_retriever()
-retrieval_chain = create_retrieval_chain(retriever, document_chain)
 
-propmt = st.text_input("Please input your prompt here")
+if "vectors" in st.session_state:
+    retriever = st.session_state.vectors.as_retriever()
+    retrieval_chain = create_retrieval_chain(retriever, document_chain)
 
-if propmt:
-    start_time = time.process_time()
-    response = retrieval_chain.invoke({"input": propmt})
-    print("Response_time:", time.process_time() - start_time)
-    st.write(response)
+    user_prompt = st.text_input("Please input your prompt here")
 
-    with st.expander("Similarity- Search Results"):
-        for i, doc in enumerate(response["context"]):
-            st.write(doc.page_content)
+    if user_prompt:
+        start_time = time.process_time()
+        response = retrieval_chain.invoke({"input": user_prompt})
+        st.write(response["answer"])
+        st.caption(f"⏱️ Response time: {time.process_time() - start_time:.2f} seconds")
+
+        with st.expander("Similarity- Search Results"):
+            for i, doc in enumerate(response["context"]):
+                st.write(doc.page_content)
+else:
+    st.info("👆 Please enter a website URL above and wait for it to finish processing before chatting.")
